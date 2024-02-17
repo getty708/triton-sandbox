@@ -1,0 +1,16 @@
+version: "3"
+services:
+  tritonserver:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: getty708/triton-sandbox-24.01-py3
+    container_name: triton-sandbox
+    command: /bin/bash
+    tty: true
+    volumes:
+      - ./:/workspace/triton-sandbox
+    ports:
+      - 8000:8000
+      - 8001:8001
+      - 8002:8002
