@@ -11,7 +11,7 @@ services:
     tty: true
     volumes:
       - ../:/workspace/triton-sandbox
-    shm_size: 256m
+    shm_size: 2g
     ports:
       - "8000:8000"
       - "8001:8001"
