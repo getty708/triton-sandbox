@@ -1,3 +1,6 @@
+.PHONY: init
+init: setup-models init-client
+
 .PHONY: setup-models
 setup-models:
 	$(MAKE) -C model_repository/text_detection/1 init
