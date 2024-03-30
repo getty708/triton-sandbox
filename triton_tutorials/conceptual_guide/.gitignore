@@ -11,3 +11,5 @@
 
 # Logdir
 .outputs/
+*.csv
+*.log

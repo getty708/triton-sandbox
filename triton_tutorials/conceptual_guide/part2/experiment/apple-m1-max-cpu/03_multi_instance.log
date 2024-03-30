@@ -1,0 +1,46 @@
+root@71f276c47c6f:/workspace/triton-sandbox/triton_tutorials/conceptual_guide/part2# perf_analyzer -m text_recognition -b 2 --shape input.1:1,32,100 --concurrency-range 2:16:2 --percentile=95 -f perf.csv --measurement-interval 10000  
+*** Measurement Settings ***
+  Batch size: 2
+  Service Kind: Triton
+  Using "time_windows" mode for stabilization
+  Measurement window: 10000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 16 concurrent requests
+  Using synchronous calls for inference
+  Stabilizing using p95 latency
+
+Request concurrency: 2
+  Client: 
+    Request count: 112
+    Throughput: 6.21969 infer/sec
+    p50 latency: 644110 usec
+    p90 latency: 730460 usec
+    p95 latency: 744706 usec
+    p99 latency: 775567 usec
+    Avg HTTP time: 637062 usec (send/recv 84 usec + response wait 636978 usec)
+  Server: 
+    Inference count: 224
+    Execution count: 108
+    Successful request count: 112
+    Avg request latency: 636521 usec (overhead 240 usec + queue 1003 usec + compute input 19 usec + compute infer 635232 usec + compute output 26 usec)
+
+Request concurrency: 4
+  Client: 
+    Request count: 104
+    Throughput: 5.77718 infer/sec
+    p50 latency: 1365288 usec
+    p90 latency: 2232213 usec
+    p95 latency: 2417051 usec
+    p99 latency: 2726485 usec
+    Avg HTTP time: 1408327 usec (send/recv 48 usec + response wait 1408279 usec)
+  Server: 
+    Inference count: 208
+    Execution count: 71
+    Successful request count: 104
+    Avg request latency: 1407687 usec (overhead 347 usec + queue 74839 usec + compute input 23 usec + compute infer 1332448 usec + compute output 29 usec)
+
+Request concurrency: 6
+Failed to obtain stable measurement within 10 measurement windows for concurrency 6. Please try to increase the --measurement-interval.
+Inferences/Second vs. Client p95 Batch Latency
+Concurrency: 2, throughput: 6.21969 infer/sec, latency 744706 usec
+Concurrency: 4, throughput: 5.77718 infer/sec, latency 2417051 usec

@@ -1,0 +1,110 @@
+root@71f276c47c6f:/workspace/triton-sandbox/triton_tutorials/conceptual_guide/part2# perf_analyzer -m text_recognition -b 2 --shape input.1:1,32,100 --concurrency-range 2:16:2 --percentile=95
+*** Measurement Settings ***
+  Batch size: 2
+  Service Kind: Triton
+  Using "time_windows" mode for stabilization
+  Measurement window: 5000 msec
+  Latency limit: 0 msec
+  Concurrency limit: 16 concurrent requests
+  Using synchronous calls for inference
+  Stabilizing using p95 latency
+
+Request concurrency: 2
+  Client: 
+    Request count: 83
+    Throughput: 9.22184 infer/sec
+    p50 latency: 433066 usec
+    p90 latency: 648098 usec
+    p95 latency: 665004 usec
+    p99 latency: 690618 usec
+    Avg HTTP time: 436365 usec (send/recv 122 usec + response wait 436243 usec)
+  Server: 
+    Inference count: 166
+    Execution count: 51
+    Successful request count: 83
+    Avg request latency: 436238 usec (overhead 376 usec + queue 46577 usec + compute input 20 usec + compute infer 389238 usec + compute output 26 usec)
+
+Request concurrency: 4
+  Client: 
+    Request count: 82
+    Throughput: 9.10787 infer/sec
+    p50 latency: 879338 usec
+    p90 latency: 1323212 usec
+    p95 latency: 1358247 usec
+    p99 latency: 1414050 usec
+    Avg HTTP time: 872125 usec (send/recv 119 usec + response wait 872006 usec)
+  Server: 
+    Inference count: 164
+    Execution count: 28
+    Successful request count: 82
+    Avg request latency: 871938 usec (overhead 479 usec + queue 162630 usec + compute input 38 usec + compute infer 708755 usec + compute output 36 usec)
+
+Request concurrency: 6
+  Client: 
+    Request count: 79
+    Throughput: 8.77454 infer/sec
+    p50 latency: 1318986 usec
+    p90 latency: 1810740 usec
+    p95 latency: 1846793 usec
+    p99 latency: 1912482 usec
+    Avg HTTP time: 1324295 usec (send/recv 50 usec + response wait 1324245 usec)
+  Server: 
+    Inference count: 158
+    Execution count: 21
+    Successful request count: 79
+    Avg request latency: 1323776 usec (overhead 552 usec + queue 460829 usec + compute input 34 usec + compute infer 862323 usec + compute output 37 usec)
+
+Request concurrency: 8
+  Client: 
+    Request count: 84
+    Throughput: 9.33095 infer/sec
+    p50 latency: 1718573 usec
+    p90 latency: 1824701 usec
+    p95 latency: 1832295 usec
+    p99 latency: 1888310 usec
+    Avg HTTP time: 1747004 usec (send/recv 39 usec + response wait 1746965 usec)
+  Server: 
+    Inference count: 168
+    Execution count: 21
+    Successful request count: 84
+    Avg request latency: 1746565 usec (overhead 571 usec + queue 873187 usec + compute input 33 usec + compute infer 872741 usec + compute output 32 usec)
+
+Request concurrency: 10
+  Client: 
+    Request count: 60
+    Throughput: 6.66104 infer/sec
+    p50 latency: 3516110 usec
+    p90 latency: 3759714 usec
+    p95 latency: 3782469 usec
+    p99 latency: 3784639 usec
+    Avg HTTP time: 3068600 usec (send/recv 74 usec + response wait 3068526 usec)
+  Server: 
+    Inference count: 120
+    Execution count: 15
+    Successful request count: 60
+    Avg request latency: 3067295 usec (overhead 506 usec + queue 1837253 usec + compute input 52 usec + compute infer 1229441 usec + compute output 42 usec)
+
+Request concurrency: 12
+  Client: 
+    Request count: 60
+    Throughput: 6.66504 infer/sec
+    p50 latency: 3521649 usec
+    p90 latency: 3656777 usec
+    p95 latency: 3677621 usec
+    p99 latency: 3677634 usec
+    Avg HTTP time: 3411847 usec (send/recv 61 usec + response wait 3411786 usec)
+  Server: 
+    Inference count: 120
+    Execution count: 15
+    Successful request count: 60
+    Avg request latency: 3411503 usec (overhead 477 usec + queue 2240396 usec + compute input 52 usec + compute infer 1170539 usec + compute output 37 usec)
+
+Request concurrency: 14
+Failed to obtain stable measurement within 10 measurement windows for concurrency 14. Please try to increase the --measurement-interval.
+Inferences/Second vs. Client p95 Batch Latency
+Concurrency: 2, throughput: 9.22184 infer/sec, latency 665004 usec
+Concurrency: 4, throughput: 9.10787 infer/sec, latency 1358247 usec
+Concurrency: 6, throughput: 8.77454 infer/sec, latency 1846793 usec
+Concurrency: 8, throughput: 9.33095 infer/sec, latency 1832295 usec
+Concurrency: 10, throughput: 6.66104 infer/sec, latency 3782469 usec
+Concurrency: 12, throughput: 6.66504 infer/sec, latency 3677621 usec
