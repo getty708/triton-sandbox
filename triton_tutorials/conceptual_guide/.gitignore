@@ -1,0 +1,15 @@
+# Models
+*.pb
+*.tar.gz
+*.pth
+*.onnx
+
+# Images
+*.png
+*.jpg
+
+
+# Logdir
+.outputs/
+*.csv
+*.log

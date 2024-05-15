@@ -1,0 +1,4 @@
+torch
+loguru
+tritonclient[http]
+opencv-python-headless

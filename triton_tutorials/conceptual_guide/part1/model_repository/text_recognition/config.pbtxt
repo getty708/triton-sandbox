@@ -1,0 +1,4 @@
+# Ref: https://github.com/triton-inference-server/tutorials/blob/main/Conceptual_Guide/Part_1-model_deployment/model_repository/text_recognition/config.pbtxt
+name: "text_recognition"
+backend: "onnxruntime"
+max_batch_size : 0
