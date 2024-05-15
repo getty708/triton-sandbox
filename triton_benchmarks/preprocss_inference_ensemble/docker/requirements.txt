@@ -1,0 +1,11 @@
+loguru
+matplotlib
+onnx
+onnxscript
+opencv-python-headless
+optimum[exporters]
+scipy
+transformers
+tritonclient[all]
+pytest
+seaborn
