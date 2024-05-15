@@ -297,3 +297,31 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/emacs,linux,macos,windows,python
+
+
+# ========================
+# Custom
+# ========================
+# Models
+*.pb
+*.tar.gz
+*.pth
+*.onnx
+*.json
+*.engine
+*.profile
+core
+
+# Images
+*.png
+*.jpg
+
+# Logdir
+.outputs/
+*.csv
+*.log
+*.nsys-rep
+*.zip
+*.deb
+
+
