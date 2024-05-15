@@ -1,0 +1,39 @@
+name: "detr_preprocessing"
+backend: "python"
+max_batch_size: 0
+input [
+    {
+        name: "image"
+        data_type: TYPE_UINT8
+        dims: [ -1, 3, 1080, 1920 ]
+    }
+]
+
+output [
+    {
+        name: "pixel_values"
+        data_type: TYPE_FP32
+        dims: [ -1, 3, 750, 1333 ]
+    }
+]
+instance_group [
+    {
+      count: 1
+      kind: KIND_GPU
+    }
+]
+model_warmup [
+    {
+        name : "DETR Warmup Sample"
+        batch_size: 1
+        inputs {
+            key: "image"
+            value: {
+                data_type: TYPE_UINT8
+                dims: [ 8, 3, 1080, 1920 ]
+                random_data: true
+            }
+        }
+        count: 5
+    }
+]
