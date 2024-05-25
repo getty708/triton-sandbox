@@ -1,0 +1,7 @@
+loguru
+pytest
+torch
+onnx
+onnxscript
+click
+onnxsim

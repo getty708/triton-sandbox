@@ -323,5 +323,4 @@ core
 *.nsys-rep
 *.zip
 *.deb
-
-
+*.sarif

@@ -1,0 +1,20 @@
+"""Ref: https://zenn.dev/turing_motors/articles/5b56edb7da1d30
+"""
+
+import torch
+import torch.nn as nn
+
+from benchmarks.onnx_backend.models.const import SIMPLE_TRANSFORMER_OUTPUT_TENSOR
+
+
+class SimpleTransformer(nn.Module):
+    def __init__(self, d_model: int = 128, nhead: int = 2, num_layers: int = 2):
+        super(SimpleTransformer, self).__init__()
+        self.encoder = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead),
+            num_layers=num_layers,
+        )
+
+    def forward(self, input_tensor: torch.Tensor) -> dict[str, torch.Tensor]:
+        output_tensor = self.encoder(input_tensor)
+        return {SIMPLE_TRANSFORMER_OUTPUT_TENSOR: output_tensor}
