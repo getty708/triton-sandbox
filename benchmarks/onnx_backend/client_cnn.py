@@ -130,7 +130,8 @@ def call_monolithic_1(
 ) -> tuple[dict[str, torch.Tensor] | list[grpcclient.InferRequestedOutput], float]:
     ts_start = time.time()
     if pipeline_architecture == PIPELINE_ARCH_ENSEMBLE:
-        model_name = f"ensemble_{step_size}"
+        assert step_size == 4
+        model_name = f"ensemble_cnn_{step_size}"
     elif pipeline_architecture == PIPELINE_ARCH_MONOLITHIC:
         assert step_size == 1
         model_name = "simple_cnn"

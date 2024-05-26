@@ -16,6 +16,11 @@ NSYS_COMMON_PARAMS = -t nvtx,osrt,cuda --force-overwrite=true
 start-triton:
 	tritonserver ${TRITON_COMMON_PARAMS}
 
+.PHONY: start-triton-with-nsys
+start-triton-with-nsys:
+	nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/triton-ensemble-ES${PIPELINE_STEPS} \
+		tritonserver ${TRITON_COMMON_PARAMS}
+
 # ================ Client ================
 OUTPUT_DIR := ./outputs/run0
 NUM_REQUESTS := 10
@@ -28,4 +33,13 @@ CLIENT_COMMON_ARGS := \
 
 .PHONY: call-monolithic-cnn
 call-monolithic-cnn:
-	python client_cnn.py ${CLIENT_COMMON_ARGS}
+	python client_cnn.py ${CLIENT_COMMON_ARGS} \
+		--pipeline-architecture	monolithic \
+		--pipeline-step-size 1
+
+
+.PHONY: call-ensemble-cnn
+call-ensemble-cnn:
+	python client_cnn.py ${CLIENT_COMMON_ARGS} \
+		--pipeline-architecture	ensemble \
+		--pipeline-step-size 4
