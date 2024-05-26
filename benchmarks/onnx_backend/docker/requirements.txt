@@ -1,7 +1,13 @@
+click
 loguru
-pytest
-torch
 onnx
 onnxscript
-click
 onnxsim
+opencv-contrib-python
+opencv-python
+pandas
+pytest
+pyyaml
+torch
+tqdm
+tritonclient[all]

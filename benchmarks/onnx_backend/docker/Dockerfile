@@ -2,7 +2,10 @@ FROM nvcr.io/nvidia/tritonserver:24.01-py3 AS base_image
 ENV WORKDIR=/workspace/benchmark/onnx_backend/
 
 RUN apt update \
-    &&  apt install -y python-is-python3 pkg-config\
+    &&  apt install -y \
+    python-is-python3 \
+    pkg-config \
+    python3-opencv \
     && apt autoremove \
     && apt clean
 
