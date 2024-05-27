@@ -2,7 +2,9 @@ import torch
 
 from benchmarks.onnx_backend.models.const import (
     SIMPLE_CNN_OUTPUT_TENSOR,
+    SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
+    SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
 )
 from benchmarks.onnx_backend.models.simple_cnn import SimpleCNN
 from benchmarks.onnx_backend.models.simple_transformer import SimpleTransformer
@@ -33,13 +35,28 @@ def test_smoke_simple_transformer():
     model.eval()
     assert isinstance(model, torch.nn.Module)
 
-    input_tensor = torch.randn((1, 8, 128)).float().to(_DEVICE)
+    batch_size = 32
+    input_tensor = (
+        torch.randn(
+            (
+                batch_size,
+                SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
+                SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+            )
+        )
+        .float()
+        .to(_DEVICE)
+    )
     output = model(input_tensor)
 
     assert isinstance(output, dict)
     out_tensor = output[SIMPLE_TRANSFORMER_OUTPUT_TENSOR]
     assert isinstance(out_tensor, torch.Tensor)
-    assert list(out_tensor.size()) == [1, 8, 128]
+    assert list(out_tensor.size()) == [
+        batch_size,
+        SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
+        SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+    ]
     if torch.cuda.is_available():
         assert out_tensor.is_cuda is True
     else:

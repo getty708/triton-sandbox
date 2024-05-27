@@ -4,14 +4,22 @@
 import torch
 import torch.nn as nn
 
-from benchmarks.onnx_backend.models.const import SIMPLE_TRANSFORMER_OUTPUT_TENSOR
+from benchmarks.onnx_backend.models.const import (
+    SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+    SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
+)
 
 
 class SimpleTransformer(nn.Module):
-    def __init__(self, d_model: int = 128, nhead: int = 2, num_layers: int = 2):
+    def __init__(
+        self,
+        d_model: int = SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+        nhead: int = 2,
+        num_layers: int = 2,
+    ):
         super(SimpleTransformer, self).__init__()
         self.encoder = nn.TransformerEncoder(
-            nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead),
+            nn.TransformerEncoderLayer(d_model=d_model, nhead=nhead, batch_first=True),
             num_layers=num_layers,
         )
 

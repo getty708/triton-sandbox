@@ -10,8 +10,10 @@ from loguru import logger
 from tqdm import tqdm
 
 from benchmarks.onnx_backend.models.const import (
-    SIMPLE_CNN_INPUT_TENSOR,
-    SIMPLE_CNN_OUTPUT_TENSOR,
+    SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+    SIMPLE_TRANSFORMER_INPUT_TENSOR,
+    SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
+    SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
 )
 from benchmarks.onnx_backend.utils.client import (
     cleanup_shared_memory,
@@ -19,7 +21,6 @@ from benchmarks.onnx_backend.utils.client import (
     create_input_output_tensors_with_cudashm,
     create_input_tensors_wo_shared_memory,
     create_logdir,
-    prepare_image_batch_tensor,
     print_output_tensor_metas,
     save_client_stats,
     save_triton_inference_stats,
@@ -71,8 +72,8 @@ def make_parser() -> argparse.ArgumentParser:
         "-b",
         "--batch-size",
         type=int,
-        default=2,
-        help="Batch size of the single request.",
+        default=1,
+        help="Batch size of the single request. Only 1 is supported for now.",
     )
     parser.add_argument(
         "--use-shared-memory",
@@ -109,8 +110,8 @@ def prepare_input_tensor(
                 create_input_output_tensors_with_cudashm(
                     image_batch,
                     client,
-                    input_tensor_name=SIMPLE_CNN_INPUT_TENSOR,
-                    output_tensor_name=SIMPLE_CNN_OUTPUT_TENSOR,
+                    input_tensor_name=SIMPLE_TRANSFORMER_INPUT_TENSOR,
+                    output_tensor_name=SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
                 )
             )
     else:
@@ -131,10 +132,10 @@ def call_triton_model(
     ts_start = time.time()
     if pipeline_architecture == PIPELINE_ARCH_ENSEMBLE:
         assert step_size == 4
-        model_name = f"ensemble_cnn_{step_size}"
+        model_name = f"ensemble_transformer_{step_size}"
     elif pipeline_architecture == PIPELINE_ARCH_MONOLITHIC:
         assert step_size == 1
-        model_name = "simple_cnn"
+        model_name = "simple_transformer"
     else:
         raise ValueError(f"Invalid architecture: {pipeline_architecture}")
     results = client.infer(
@@ -152,15 +153,25 @@ def main():
     logdir = create_logdir(args)
 
     # Prepare inputs
-    image_batch = prepare_image_batch_tensor(args.input, args.batch_size)
     client = grpcclient.InferenceServerClient(url="localhost:8001")
 
     # Inference
     logger.info(f"Call Triton with pattern {args.pipeline_architecture}")
     df_stats = []
     for _ in tqdm(range(args.num_requests)):
+        input_batch = (
+            torch.randn(
+                (
+                    args.batch_size,
+                    SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
+                    SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+                )
+            )
+            .float()
+            .to(_DEVICE)
+        )
         input_tensors, output_tensors, shm_handles = prepare_input_tensor(
-            image_batch, use_shared_memory=args.use_shared_memory, client=client
+            input_batch, use_shared_memory=args.use_shared_memory, client=client
         )
         results, elapsed_time = call_triton_model(
             args.pipeline_architecture,

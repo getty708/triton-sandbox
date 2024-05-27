@@ -24,8 +24,8 @@ _DEFAULT_OUTPUT_TENSOR_NAME = "output"
 def create_logdir(args: argparse.Namespace) -> Path:
     logdir = (
         args.logdir
-        / f"b{args.batch_size}-r{args.num_requests}"
-        / f"p{args.pipeline_architecture}"
+        / f"b{args.batch_size}-n{args.num_requests}"
+        / f"{args.pipeline_architecture}"
     )
     logdir.mkdir(parents=True, exist_ok=True)
     return logdir

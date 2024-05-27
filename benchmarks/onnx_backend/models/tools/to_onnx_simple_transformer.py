@@ -6,6 +6,10 @@ import torch
 from loguru import logger
 from onnxsim import simplify
 
+from benchmarks.onnx_backend.models.const import (
+    SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+    SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
+)
 from benchmarks.onnx_backend.models.simple_transformer import SimpleTransformer
 
 _DEFAULT_OUTPUT_DIR = Path(__file__).parent
@@ -19,17 +23,43 @@ def convert_simple_transformer_to_onnx(
 ):
     # Create a model instance and dummy outputs
     model = SimpleTransformer()
-    dummy_input = torch.randn(2, 8, 128)
+    # max_batch_size = 1
+    BATCH_SIZE = 1
+
+    dummy_input = torch.randn(
+        BATCH_SIZE,
+        SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
+        SIMPLE_TRANSFORMER_EMBEDDING_DIM,
+    )
+
+    # FIXME: Onnx generated with dynamo contains custom operators that are not supported by onnxruntime.
+    # logger.info(f"Converting model to ONNX.")
+    # # TODO: Set custom names to input/output tensors
+    # export_options = torch.onnx.ExportOptions(dynamic_shapes=True)
+    # onnx_program = torch.onnx.dynamo_export(
+    #     model, dummy_input, export_options=export_options
+    # )
+    # onnx_program.save(str(output_dir / onnx_filename))
+    # print("Model Input:")
+    # print(onnx_program.model_proto.graph.input[0])
 
     logger.info(f"Converting model to ONNX.")
+    logger.info(f"input.shape={dummy_input.shape}")
     # TODO: Set custom names to input/output tensors
-    export_options = torch.onnx.ExportOptions(dynamic_shapes=True)
-    onnx_program = torch.onnx.dynamo_export(
-        model, dummy_input, export_options=export_options
+    output_path = output_dir / onnx_filename
+    torch.onnx.export(
+        model=model,
+        args=(dummy_input),
+        f=output_path,
+        opset_version=17,
+        input_names=["input"],
+        output_names=["output"],
+        # FIXME: Dynamic batching raise RuntimeError.
+        dynamic_axes={
+            "input": {0: "batch_size"},
+            "output": {0: "batch_size"},
+        },
     )
-    onnx_program.save(str(output_dir / onnx_filename))
-    print("Model Input:")
-    print(onnx_program.model_proto.graph.input[0])
 
 
 def optimize_simple_transformer_onnx_structure(
