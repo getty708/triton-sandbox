@@ -13,12 +13,13 @@
   - NVIDIA L4 x 1
   - CPU: Intel Cascade Lake
 
-## Models
+## Models on Triton
 
-- [Simple CNN](./models/simple_cnn.py): 3-layer CNN model.
-- [Simple Transformer](./models/simple_transformer.py): 2-layer transformer encoder.
+- [`simple_cnn`](./models/simple_cnn.py): 3-layer CNN model.
+- [`simple_transformer`](./models/simple_transformer.py): 2-layer transformer encoder.
   - embedding size: 2048
   - input sequence length: 32
+- `simple_transformer_trt`: ORT-TRT optimization.
 - `ensemble_cnn_4`: A pipeline that serially connects four Simple CNNs.
 - `ensemble_transformer_4`: A pipeline that serially connects four Simple Transformers.
 
@@ -35,6 +36,9 @@ docker compose up -d
 
 ```bash
 docker compose exec tritonserver bash
+
+# Generate ONNX files
+make init
 
 # Start Triton Inference Server
 make start-triton
