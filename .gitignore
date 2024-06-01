@@ -317,11 +317,10 @@ core
 *.jpg
 
 # Logdir
-.outputs/
+outputs/
 *.csv
 *.log
 *.nsys-rep
 *.zip
 *.deb
-
-
+*.sarif

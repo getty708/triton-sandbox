@@ -1,0 +1,69 @@
+name: "ensemble_transformer_4"
+platform: "ensemble"
+max_batch_size: 0
+input [
+    {
+        name: "input"
+        data_type: TYPE_FP32
+        dims: [ -1, 32, 2048]
+    }
+]
+output [
+    {
+        name: "output"
+        data_type: TYPE_FP32
+        dims: [ -1, 32, 2048]
+    }
+]
+ensemble_scheduling {
+    step [
+        {
+            model_name: "simple_transformer"
+            model_version: -1
+            input_map {
+                key: "input"
+                value: "input"
+            }
+            output_map {
+                key: "output"
+                value: "output_m1"
+            }
+        },
+        {
+            model_name: "simple_transformer"
+            model_version: -1
+            input_map {
+                key: "input"
+                value: "output_m1"
+            }
+            output_map {
+                key: "output"
+                value: "output_m2"
+            }
+        },
+        {
+            model_name: "simple_transformer"
+            model_version: -1
+            input_map {
+                key: "input"
+                value: "output_m2"
+            }
+            output_map {
+                key: "output"
+                value: "output_m3"
+            }
+        },
+        {
+            model_name: "simple_transformer"
+            model_version: -1
+            input_map {
+                key: "input"
+                value: "output_m3"
+            }
+            output_map {
+                key: "output"
+                value: "output"
+            }
+        }
+    ]
+}
