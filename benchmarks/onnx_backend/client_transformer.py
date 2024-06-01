@@ -55,6 +55,11 @@ def make_parser() -> argparse.ArgumentParser:
         help="architecture of the pipeline. [monolithic, ensemble]",
     )
     parser.add_argument(
+        "--trt",
+        action="store_true",
+        help="use ORT-TRT optimization.",
+    )
+    parser.add_argument(
         "-s",
         "--pipeline-step-size",
         type=int,
@@ -124,6 +129,7 @@ def prepare_input_tensor(
 
 def call_triton_model(
     pipeline_architecture: str,
+    use_trt: bool,
     step_size: int,
     input_tensors: torch.Tensor | list[grpcclient.InferInput],
     output_tensors: list[grpcclient.InferRequestedOutput] | None = None,
@@ -138,6 +144,8 @@ def call_triton_model(
         model_name = "simple_transformer"
     else:
         raise ValueError(f"Invalid architecture: {pipeline_architecture}")
+    if use_trt:
+        model_name += "_trt"
     results = client.infer(
         model_name=model_name,
         inputs=input_tensors,
@@ -175,6 +183,7 @@ def main():
         )
         results, elapsed_time = call_triton_model(
             args.pipeline_architecture,
+            args.trt,
             args.pipeline_step_size,
             input_tensors,
             output_tensors,

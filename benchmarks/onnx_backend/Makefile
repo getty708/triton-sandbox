@@ -63,6 +63,12 @@ call-monolithic-transformer:
 		--pipeline-architecture	monolithic \
 		--pipeline-step-size 1
 
+# Transformer (ORT-TRT Optimization)
+.PHONY: call-monolithic-transformer-trt
+call-monolithic-transformer-trt:
+	python client_transformer.py ${CLIENT_COMMON_ARGS} \
+		--pipeline-architecture	monolithic \
+		--pipeline-step-size 1 --trt
 
 # Transformer
 .PHONY: call-ensemble-transformer
@@ -70,3 +76,14 @@ call-ensemble-transformer:
 	python client_transformer.py ${CLIENT_COMMON_ARGS} \
 		--pipeline-architecture	ensemble \
 		--pipeline-step-size 4
+
+
+OUTPUT_SHM_SIZE = 214748364
+
+# Performance Analyzer
+.PHONY: perf-transformer
+perf-transformer:
+	perf_analyzer \
+		-m simple_transformer --shape input:${BATCH_SIZE},32,2048 \
+		--shared-memory cuda --output-shared-memory-size ${OUTPUT_SHM_SIZE} \
+		--percentile=95 --concurrency-range 1:4
