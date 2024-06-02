@@ -40,7 +40,7 @@ def prepare_input_tensor(
     if model_name == "ensemble_single_onnx":
         output_tensor_names = ["output_image"]
     elif model_name == "ensemble_triple_onnx":
-        output_tensor_names = ["output_image_m2", "output_image_m3"]
+        output_tensor_names = ["output_image_m1", "output_image_m2", "output_image_m3"]
     else:
         raise ValueError(f"Invalid model name: {model_name}")
 

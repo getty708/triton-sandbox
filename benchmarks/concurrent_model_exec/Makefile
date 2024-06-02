@@ -6,10 +6,12 @@ MODEL_NAME := default_model
 .PHONY: init
 init:
 	@echo "Convert pytorch model into ONNX"
-	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build
-	@echo "Copy generated ONNX files into model_repository/"
-	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn.onnx ./model_repository/simple_cnn/1/model.onnx
-
+	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=1
+	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=2
+	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=3
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l1.onnx ./model_repository/simple_cnn_l1/1/model.onnx
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l2.onnx ./model_repository/simple_cnn_l2/1/model.onnx
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_l3/1/model.onnx
 
 # ================ Triton Server ================
 SHM_SIZE = 8589934592 # 8GB
@@ -19,8 +21,8 @@ TRITON_COMMON_PARAMS = \
 	--pinned-memory-pool-byte-size ${SHM_SIZE} \
 	--cuda-memory-pool-byte-size 0:${SHM_SIZE}
 NSYS_COMMON_PARAMS = -t nvtx,osrt,cuda --force-overwrite=true
-NSYS_CMD := nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/${MODEL_NAME}
-# NSYS_CMD :=
+# NSYS_CMD := nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/${MODEL_NAME}
+NSYS_CMD :=
 
 .PHONY: run
 run:

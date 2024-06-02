@@ -19,11 +19,12 @@ DEFAULT_SIMPLE_CNN_ONNX_PATH = (
 
 def convert_pytorch_model_to_onnx(
     onnx_path: Path = DEFAULT_SIMPLE_CNN_ONNX_PATH,
+    num_layers: int = 3,
 ):
     """Export SimpleCNN model to ONNX with Dynamo."""
     # Create a model instance and dummy outputs
     batch_size = 8
-    model = SimpleCNN()
+    model = SimpleCNN(num_layers=num_layers)
     dummy_input = torch.randn(batch_size, 3, 1080, 1920)
 
     # Convert to ONNX with Dynamo.
@@ -54,7 +55,7 @@ def rename_onnx_io_nodes(onnx_path: Path):
     model.graph.output[0].name = SIMPLE_CNN_OUTPUT_TENSOR
 
     # Rename the input/output name in the graph.
-    logger.info(f"Rename input/output node name in the graph.a")
+    logger.info(f"Rename input/output node name in the graph.")
     for node in model.graph.node:
         node.input[:] = [
             SIMPLE_CNN_INPUT_TENSOR if x == original_input_node_name else x
@@ -71,10 +72,12 @@ def rename_onnx_io_nodes(onnx_path: Path):
 
 @click.command()
 @click.option("-o", "--onnx-path", type=Path, default=DEFAULT_SIMPLE_CNN_ONNX_PATH)
+@click.option("-l", "--num-layers", type=int, default=3)
 def convert_simple_cnn_to_onnx(
     onnx_path: Path = DEFAULT_SIMPLE_CNN_ONNX_PATH,
+    num_layers: int = 3,
 ):
-    convert_pytorch_model_to_onnx(onnx_path)
+    convert_pytorch_model_to_onnx(onnx_path, num_layers)
     rename_onnx_io_nodes(onnx_path)
 
 

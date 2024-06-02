@@ -1,4 +1,4 @@
-name: "simple_cnn"
+name: "simple_cnn_l2"
 platform: "onnxruntime_onnx"
 max_batch_size: 0
 default_model_filename: "model.onnx"
@@ -18,7 +18,7 @@ output [
 ]
 instance_group [
   {
-    count: 3
+    count: 1
     kind: KIND_AUTO
   }
 ]
