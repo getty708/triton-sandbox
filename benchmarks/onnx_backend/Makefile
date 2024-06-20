@@ -23,22 +23,30 @@ TRITON_COMMON_PARAMS = \
 	--backend-config=onnxruntime,default-max-batch-size=8 \
 	--pinned-memory-pool-byte-size ${SHM_SIZE} \
 	--cuda-memory-pool-byte-size 0:${SHM_SIZE}
-NSYS_COMMON_PARAMS = -t nvtx,osrt,cuda --force-overwrite=true
+# NSYS_COMMAND = nsys profile  -t nvtx,osrt,cuda,cudnn,cublas --backtrace=dwarf --force-overwrite=true
+NSYS_COMMAND :=
 
 .PHONY: start-triton
 start-triton:
-	tritonserver ${TRITON_COMMON_PARAMS}
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
+		--model-control-mode=explicit \
+		--load-model simple_cnn \
+		--load-model simple_transformer \
+		--load-model simple_transformer_trt
+
+.PHONY: start-triton-cnn
+start-triton-cnn:
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
+		--model-control-mode=explicit \
+		--load-model simple_cnn
 
 .PHONY: start-triton-transformer
 start-triton-transformer:
-	tritonserver ${TRITON_COMMON_PARAMS} \
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
 		--model-control-mode=explicit \
-		--load-model simple_transformer
+		--load-model simple_transformer \
+		--load-model simple_transformer_trt
 
-.PHONY: start-triton-with-nsys
-start-triton-with-nsys:
-	nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/triton-ensemble-ES${PIPELINE_STEPS} \
-		tritonserver ${TRITON_COMMON_PARAMS}
 
 # ================ Client ================
 OUTPUT_DIR := ./outputs/run0

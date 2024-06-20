@@ -9,7 +9,7 @@ import tritonclient.grpc as grpcclient
 from loguru import logger
 from tqdm import tqdm
 
-from benchmarks.onnx_backend.models.const import (
+from benchmarks.common.models.simple_transformer.const import (
     SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_INPUT_TENSOR,
     SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
