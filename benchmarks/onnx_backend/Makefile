@@ -1,10 +1,17 @@
 .PHONY: init
-init:
-	@echo "Convert pytorch model into ONNX"
-	$(MAKE) -C ./models/tools clean build
-	@echo "Copy generated ONNX files into model_repository/"
-	cp -r ./models/tools/simple_cnn.onnx ./model_repository/simple_cnn/1/model.onnx
-	cp -r ./models/tools/simple_transformer_optimized.onnx ./model_repository/simple_transformer/1/simple_transformer_optimized.onnx
+init: build-simple-cnn build-simple-transformer
+
+.PHONY: build-simple-cnn
+build-simple-cnn:
+	$(MAKE) -C ../common/models/simple_cnn/tools build MODEL_NUM_LAYERS=3
+	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn/1/model.onnx
+
+.PHONY: build-simple-transformer
+build-simple-transformer:
+	$(MAKE) -C ../common/models/simple_transformer/tools build
+	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer/1/model.onnx
+
+
 
 # ================ Triton Server ================
 PIPELINE_STEPS := 1

@@ -14,7 +14,7 @@ from benchmarks.common.models.simple_transformer.simple_transformer import (
     SimpleTransformer,
 )
 
-_DEFAULT_OUTPUT_DIR = Path(__file__).parent
+_DEFAULT_OUTPUT_DIR = Path(__file__).parent / "outputs"
 ONNX_MODEL_FILE_NAME = "simple_transformer.onnx"
 ONNX_OPTIMIZED_MODEL_FILE_NAME = "simple_transformer_optimized.onnx"
 
