@@ -3,13 +3,15 @@ init: build-simple-cnn build-simple-transformer
 
 .PHONY: build-simple-cnn
 build-simple-cnn:
-	$(MAKE) -C ../common/models/simple_cnn/tools build MODEL_NUM_LAYERS=3
+	$(MAKE) -C ../common/models/simple_cnn/tools build MODEL_NUM_LAYERS=1
 	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn/1/model.onnx
+	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_trt/1/model.onnx
 
 .PHONY: build-simple-transformer
 build-simple-transformer:
 	$(MAKE) -C ../common/models/simple_transformer/tools build
 	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer/1/model.onnx
+	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer_trt/1/model.onnx
 
 
 

@@ -1,7 +1,6 @@
 name: "simple_transformer"
 platform: "onnxruntime_onnx"
 max_batch_size: 0
-default_model_filename: "simple_transformer_optimized.onnx"
 input [
     {
         name: "input"
