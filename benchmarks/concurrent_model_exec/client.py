@@ -37,9 +37,9 @@ def prepare_input_tensor(
     client: grpcclient.InferenceServerClient | None = None,
 ):
     # == Make InferInput ==
-    if model_name == "ensemble_single_onnx":
+    if "single" in model_name:
         output_tensor_names = ["output_image"]
-    elif model_name == "ensemble_triple_onnx":
+    elif "ensemble_" in model_name:
         output_tensor_names = ["output_image_m1", "output_image_m2", "output_image_m3"]
     else:
         raise ValueError(f"Invalid model name: {model_name}")
@@ -81,7 +81,7 @@ def call_triton_model(
 @click.option("--logdir", type=Path, default=OUTPUT_DIR)
 def main(
     input_image: Path = SAMPLE_IMAGE_PATH,
-    pipeline_name: str = "ensemble_single_onnx",
+    pipeline_name: str = "ensemble_sequential",
     batch_size: int = 2,
     num_requests: int = 5,
     logdir: Path = OUTPUT_DIR,

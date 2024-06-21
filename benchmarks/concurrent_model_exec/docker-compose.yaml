@@ -1,4 +1,3 @@
-version: "3"
 services:
   tritonserver:
     image: getty708/triton-sandbox:24.01-py3-benchmark

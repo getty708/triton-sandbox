@@ -1,17 +1,35 @@
-MODEL_DIR := ../common/models/simple_cnn/
+MODEL_DIR := ../common/models/simple_cnn
 MODEL_TOOLS_DIR := ${MODEL_DIR}/tools
-MODEL_NAME := default_model
+# MODEL_NAME := ensemble_sequential
+# MODEL_NAME := ensemble_partially_parallel
+MODEL_NAME := ensemble_full_parallel
 
 
-.PHONY: init
-init:
-	@echo "Convert pytorch model into ONNX"
-	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=1
-	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=2
-	$(MAKE) -C ${MODEL_TOOLS_DIR} clean build MODEL_NUM_LAYERS=3
-	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l1.onnx ./model_repository/simple_cnn_l1/1/model.onnx
-	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l2.onnx ./model_repository/simple_cnn_l2/1/model.onnx
-	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_l3/1/model.onnx
+ONNX_MODELS := \
+	./model_repository/simple_cnn_l1/1/model.onnx \
+	./model_repository/simple_cnn_l2/1/model.onnx \
+	./model_repository/simple_cnn_l3/1/model.onnx
+
+.PHONY: build
+build: ${ONNX_MODELS}
+
+.PHONY: clean
+clean: ${ONNX_MODELS}
+	rm -rf ${ONNX_MODELS}
+
+./model_repository/simple_cnn_l1/1/model.onnx:
+	$(MAKE) -C ${MODEL_TOOLS_DIR} build MODEL_NUM_LAYERS=1
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l1.onnx $@
+
+./model_repository/simple_cnn_l2/1/model.onnx:
+	$(MAKE) -C ${MODEL_TOOLS_DIR} build MODEL_NUM_LAYERS=2
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l2.onnx $@
+
+./model_repository/simple_cnn_l3/1/model.onnx:
+	$(MAKE) -C ${MODEL_TOOLS_DIR} build MODEL_NUM_LAYERS=3
+	cp -r ${MODEL_TOOLS_DIR}/outputs/simple_cnn_l3.onnx $@
+
+
 
 # ================ Triton Server ================
 SHM_SIZE = 8589934592 # 8GB
@@ -41,11 +59,3 @@ call-ensemble-model:
 	python client.py ${CLIENT_COMMON_ARGS} \
 		--pipeline-name ${MODEL_NAME} \
 		--logdir ${OUTPUT_DIR} \
-
-.PHONY: call-ensemble-single-onnx
-call-ensemble-single-onnx:
-	$(MAKE) call-ensemble-model MODEL_NAME=ensemble_single_onnx
-
-.PHONY: call-ensemble-triple-onnx
-call-ensemble-triple-onnx:
-	$(MAKE) call-ensemble-model MODEL_NAME=ensemble_triple_onnx
