@@ -1,0 +1,7 @@
+click
+loguru
+torch
+onnx
+onnxscript
+onnxsim
+packaging
