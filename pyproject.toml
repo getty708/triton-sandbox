@@ -5,9 +5,6 @@ description = ""
 authors = ["Naoya Yoshimura <yoshimura708x@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [
-    { include = "models" }
-]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -25,13 +22,3 @@ pytest-cov = "^5.0.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
-[tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-rsxX -l --tb=short --strict-markers -v --ff --setup-show"
-markers = [
-    "unit: mark a test as a unit test",
-    "inference: mark a test as an inference test",
-]
-testpaths = ["models/"]
