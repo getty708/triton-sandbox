@@ -13,3 +13,15 @@ repos:
         args: [--branch, master]
       - id: pretty-format-json
         args: [--autofix]
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - name: black formatter
+        id: black
+        language_version: python3
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - name: isort
+        id: isort
+        args: ["--profile", "black"]
