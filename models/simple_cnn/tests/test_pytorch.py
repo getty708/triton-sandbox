@@ -3,8 +3,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 import torch
 
-from benchmarks.common.models.simple_cnn.const import SIMPLE_CNN_OUTPUT_TENSOR
-from benchmarks.common.models.simple_cnn.simple_cnn import SimpleCNN
+from models.simple_cnn.const import SIMPLE_CNN_OUTPUT_TENSOR
+from models.simple_cnn.simple_cnn import SimpleCNN
 
 
 @patch("torch.nn.Conv2d.forward")

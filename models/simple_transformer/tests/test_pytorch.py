@@ -1,13 +1,11 @@
 import torch
 
-from benchmarks.common.models.simple_transformer.const import (
+from models.simple_transformer.const import (
     SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
     SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
 )
-from benchmarks.common.models.simple_transformer.simple_transformer import (
-    SimpleTransformer,
-)
+from models.simple_transformer.simple_transformer import SimpleTransformer
 
 _DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

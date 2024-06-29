@@ -5,11 +5,8 @@ import onnx
 import torch
 from loguru import logger
 
-from benchmarks.common.models.simple_cnn.const import (
-    SIMPLE_CNN_INPUT_TENSOR,
-    SIMPLE_CNN_OUTPUT_TENSOR,
-)
-from benchmarks.common.models.simple_cnn.simple_cnn import SimpleCNN
+from models.simple_cnn.const import SIMPLE_CNN_INPUT_TENSOR, SIMPLE_CNN_OUTPUT_TENSOR
+from models.simple_cnn.simple_cnn import SimpleCNN
 
 DEFAULT_ONNX_MODEL_FILE_NAME = "simple_cnn.onnx"
 DEFAULT_SIMPLE_CNN_ONNX_PATH = (
