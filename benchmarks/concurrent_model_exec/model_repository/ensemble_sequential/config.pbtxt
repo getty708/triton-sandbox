@@ -1,0 +1,67 @@
+name: "ensemble_sequential"
+platform: "ensemble"
+max_batch_size: 0
+input [
+    {
+        name: "input_image"
+        data_type: TYPE_FP32
+        dims: [ -1, 3, 1080, 1920 ]
+    }
+]
+output [
+    {
+        name: "output_image_m1"
+        data_type: TYPE_FP32
+        dims: [ -1, 3, -1, -1 ]
+    },
+    {
+        name: "output_image_m2"
+        data_type: TYPE_FP32
+        dims: [ -1, 3, -1, -1 ]
+    },
+    {
+        name: "output_image_m3"
+        data_type: TYPE_FP32
+        dims: [ -1, 3, -1, -1 ]
+    }
+]
+ensemble_scheduling {
+    step [
+        {
+            model_name: "simple_cnn_l1"
+            model_version: -1
+            input_map {
+                key: "input_image"
+                value: "input_image"
+            }
+            output_map {
+                key: "output_image"
+                value: "output_image_m1"
+            }
+        },
+        {
+            model_name: "simple_cnn_l2"
+            model_version: -1
+            input_map {
+                key: "input_image"
+                value: "output_image_m1"
+            }
+            output_map {
+                key: "output_image"
+                value: "output_image_m2"
+            }
+        },
+        {
+            model_name: "simple_cnn_l3"
+            model_version: -1
+            input_map {
+                key: "input_image"
+                value: "output_image_m2"
+            }
+            output_map {
+                key: "output_image"
+                value: "output_image_m3"
+            }
+        }
+    ]
+}

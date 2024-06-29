@@ -6,13 +6,15 @@ import torch
 from loguru import logger
 from onnxsim import simplify
 
-from benchmarks.onnx_backend.models.const import (
+from benchmarks.common.models.simple_transformer.const import (
     SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
 )
-from benchmarks.onnx_backend.models.simple_transformer import SimpleTransformer
+from benchmarks.common.models.simple_transformer.simple_transformer import (
+    SimpleTransformer,
+)
 
-_DEFAULT_OUTPUT_DIR = Path(__file__).parent
+_DEFAULT_OUTPUT_DIR = Path(__file__).parent / "outputs"
 ONNX_MODEL_FILE_NAME = "simple_transformer.onnx"
 ONNX_OPTIMIZED_MODEL_FILE_NAME = "simple_transformer_optimized.onnx"
 

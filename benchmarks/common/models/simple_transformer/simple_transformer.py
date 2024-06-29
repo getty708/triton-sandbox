@@ -4,7 +4,7 @@
 import torch
 import torch.nn as nn
 
-from benchmarks.onnx_backend.models.const import (
+from benchmarks.common.models.simple_transformer.const import (
     SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_OUTPUT_TENSOR,
 )

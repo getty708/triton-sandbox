@@ -1,10 +1,19 @@
 .PHONY: init
-init:
-	@echo "Convert pytorch model into ONNX"
-	$(MAKE) -C ./models/tools clean build
-	@echo "Copy generated ONNX files into model_repository/"
-	cp -r ./models/tools/simple_cnn.onnx ./model_repository/simple_cnn/1/model.onnx
-	cp -r ./models/tools/simple_transformer_optimized.onnx ./model_repository/simple_transformer/1/simple_transformer_optimized.onnx
+init: build-simple-cnn build-simple-transformer
+
+.PHONY: build-simple-cnn
+build-simple-cnn:
+	$(MAKE) -C ../common/models/simple_cnn/tools build MODEL_NUM_LAYERS=1
+	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn/1/model.onnx
+	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_trt/1/model.onnx
+
+.PHONY: build-simple-transformer
+build-simple-transformer:
+	$(MAKE) -C ../common/models/simple_transformer/tools build
+	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer/1/model.onnx
+	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer_trt/1/model.onnx
+
+
 
 # ================ Triton Server ================
 PIPELINE_STEPS := 1
@@ -14,22 +23,30 @@ TRITON_COMMON_PARAMS = \
 	--backend-config=onnxruntime,default-max-batch-size=8 \
 	--pinned-memory-pool-byte-size ${SHM_SIZE} \
 	--cuda-memory-pool-byte-size 0:${SHM_SIZE}
-NSYS_COMMON_PARAMS = -t nvtx,osrt,cuda --force-overwrite=true
+# NSYS_COMMAND = nsys profile  -t nvtx,osrt,cuda,cudnn,cublas --backtrace=dwarf --force-overwrite=true
+NSYS_COMMAND :=
 
 .PHONY: start-triton
 start-triton:
-	tritonserver ${TRITON_COMMON_PARAMS}
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
+		--model-control-mode=explicit \
+		--load-model simple_cnn \
+		--load-model simple_transformer \
+		--load-model simple_transformer_trt
+
+.PHONY: start-triton-cnn
+start-triton-cnn:
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
+		--model-control-mode=explicit \
+		--load-model simple_cnn
 
 .PHONY: start-triton-transformer
 start-triton-transformer:
-	tritonserver ${TRITON_COMMON_PARAMS} \
+	${NSYS_COMMAND} tritonserver ${TRITON_COMMON_PARAMS} \
 		--model-control-mode=explicit \
-		--load-model simple_transformer
+		--load-model simple_transformer \
+		--load-model simple_transformer_trt
 
-.PHONY: start-triton-with-nsys
-start-triton-with-nsys:
-	nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/triton-ensemble-ES${PIPELINE_STEPS} \
-		tritonserver ${TRITON_COMMON_PARAMS}
 
 # ================ Client ================
 OUTPUT_DIR := ./outputs/run0

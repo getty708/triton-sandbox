@@ -1,0 +1,2 @@
+PIPELINE_ARCH_ENSEMBLE = "ensemble"
+PIPELINE_ARCH_MONOLITHIC = "monolithic"

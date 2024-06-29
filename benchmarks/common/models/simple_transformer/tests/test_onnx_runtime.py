@@ -7,7 +7,7 @@ import numpy as np
 import onnxruntime as ort
 import pytest
 
-from benchmarks.onnx_backend.models.const import (
+from benchmarks.common.models.simple_transformer.const import (
     SIMPLE_TRANSFORMER_EMBEDDING_DIM,
     SIMPLE_TRANSFORMER_SRC_SRQUENCE_LEN,
 )
