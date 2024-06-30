@@ -1,10 +1,10 @@
-MODEL_DIR := ../common/models/simple_cnn
+MODEL_DIR := ../../models/simple_cnn
 MODEL_TOOLS_DIR := ${MODEL_DIR}/tools
 # MODEL_NAME := ensemble_sequential
 # MODEL_NAME := ensemble_partially_parallel
 MODEL_NAME := ensemble_full_parallel
 
-
+# ================ Setup ================
 ONNX_MODELS := \
 	./model_repository/simple_cnn_l1/1/model.onnx \
 	./model_repository/simple_cnn_l2/1/model.onnx \
@@ -38,8 +38,7 @@ TRITON_COMMON_PARAMS = \
 	--backend-config=onnxruntime,default-max-batch-size=8 \
 	--pinned-memory-pool-byte-size ${SHM_SIZE} \
 	--cuda-memory-pool-byte-size 0:${SHM_SIZE}
-NSYS_COMMON_PARAMS = -t nvtx,osrt,cuda --force-overwrite=true
-# NSYS_CMD := nsys profile ${NSYS_COMMON_PARAMS} --output=./outputs/${MODEL_NAME}
+# NSYS_CMD := nsys profile -t nvtx,osrt,cuda --force-overwrite=true --output=./outputs/${MODEL_NAME}
 NSYS_CMD :=
 
 .PHONY: run

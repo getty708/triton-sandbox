@@ -6,11 +6,11 @@ from pathlib import Path
 import pandas as pd
 import torch
 import tritonclient.grpc as grpcclient
-from benchmarks.common.models.simple_cnn.const import (
-    SIMPLE_CNN_INPUT_TENSOR,
-    SIMPLE_CNN_OUTPUT_TENSOR,
-)
-from benchmarks.onnx_backend.utils.client import (
+from loguru import logger
+from tqdm import tqdm
+
+from models.simple_cnn.const import SIMPLE_CNN_INPUT_TENSOR, SIMPLE_CNN_OUTPUT_TENSOR
+from triton_experiments.onnx_backend.utils.client import (
     cleanup_shared_memory,
     convert_results_on_cudashm_to_tensor_dict,
     create_input_output_tensors_with_cudashm,
@@ -21,12 +21,10 @@ from benchmarks.onnx_backend.utils.client import (
     save_client_stats,
     save_triton_inference_stats,
 )
-from benchmarks.onnx_backend.utils.const import (
+from triton_experiments.onnx_backend.utils.const import (
     PIPELINE_ARCH_ENSEMBLE,
     PIPELINE_ARCH_MONOLITHIC,
 )
-from loguru import logger
-from tqdm import tqdm
 
 _REPO_ROOT = Path(__file__).parents[2]
 SAMPLE_IMAGE_PATH = _REPO_ROOT / "data" / "pexels-anna-tarazevich-14751175-fullhd.jpg"
@@ -101,15 +99,14 @@ def prepare_input_tensor(
     if use_shared_memory:
         if _DEVICE == "cpu":
             raise NotImplementedError
-        else:
-            client.unregister_system_shared_memory()
-            client.unregister_cuda_shared_memory()
-            input_tensors, output_tensors, shm_handles = create_input_output_tensors_with_cudashm(
-                image_batch,
-                client,
-                input_tensor_name=SIMPLE_CNN_INPUT_TENSOR,
-                output_tensor_name=SIMPLE_CNN_OUTPUT_TENSOR,
-            )
+        client.unregister_system_shared_memory()
+        client.unregister_cuda_shared_memory()
+        input_tensors, output_tensors, shm_handles = create_input_output_tensors_with_cudashm(
+            image_batch,
+            client,
+            input_tensor_name=SIMPLE_CNN_INPUT_TENSOR,
+            output_tensor_name=SIMPLE_CNN_OUTPUT_TENSOR,
+        )
     else:
         input_tensors = create_input_tensors_wo_shared_memory(image_batch)
         output_tensors = None

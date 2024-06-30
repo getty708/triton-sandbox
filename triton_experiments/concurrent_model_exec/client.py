@@ -6,24 +6,21 @@ import click
 import pandas as pd
 import torch
 import tritonclient.grpc as grpcclient
-from benchmarks.common.const import SAMPLE_IMAGE_PATH
-from benchmarks.common.models.simple_cnn.const import (
-    SIMPLE_CNN_INPUT_TENSOR,
-    SIMPLE_CNN_OUTPUT_TENSOR,
-)
-from benchmarks.common.triton_client.utils import (
+from loguru import logger
+from tqdm import tqdm
+
+from models.simple_cnn.const import SIMPLE_CNN_INPUT_TENSOR
+from triton_experiments.common.const import SAMPLE_IMAGE_PATH
+from triton_experiments.common.triton_client.utils import (
     cleanup_shared_memory,
     prepare_image_batch_tensor,
     save_client_stats,
     save_triton_inference_stats,
 )
-from benchmarks.concurrent_model_exec.client_utils import (
+from triton_experiments.concurrent_model_exec.client_utils import (
     create_input_output_tensors_with_cudashm,
 )
-from loguru import logger
-from tqdm import tqdm
 
-_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 OUTPUT_DIR = Path("./outputs/")
 
 logger.remove()
@@ -56,10 +53,10 @@ def prepare_input_tensor(
 
 def call_triton_model(
     pipeline_name: str,
-    input_tensors: torch.Tensor | list[grpcclient.InferInput],
+    input_tensors: list[grpcclient.InferInput],
     output_tensors: list[grpcclient.InferRequestedOutput] | None = None,
     client: grpcclient.InferenceServerClient | None = None,
-) -> tuple[dict[str, torch.Tensor] | list[grpcclient.InferRequestedOutput], float]:
+) -> tuple[list[grpcclient.InferRequestedOutput], float]:
     ts_start = time.time()
     results = client.infer(
         model_name=pipeline_name,

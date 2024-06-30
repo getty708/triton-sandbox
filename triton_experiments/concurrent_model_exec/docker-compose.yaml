@@ -1,7 +1,7 @@
 services:
-  tritonserver:
+  workspace:
     image: getty708/triton-sandbox:24.01-py3-benchmark
-    working_dir: /workspace/triton-sandbox/benchmarks/concurrent_model_exec
+    working_dir: /workspace/triton-sandbox/triton_experiments/concurrent_model_exec
     command: /bin/bash
     tty: true
     volumes:
