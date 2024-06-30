@@ -5,11 +5,8 @@ import onnx
 import torch
 from loguru import logger
 
-from benchmarks.common.models.simple_cnn.const import (
-    SIMPLE_CNN_INPUT_TENSOR,
-    SIMPLE_CNN_OUTPUT_TENSOR,
-)
-from benchmarks.common.models.simple_cnn.simple_cnn import SimpleCNN
+from models.simple_cnn.const import SIMPLE_CNN_INPUT_TENSOR, SIMPLE_CNN_OUTPUT_TENSOR
+from models.simple_cnn.simple_cnn import SimpleCNN
 
 DEFAULT_ONNX_MODEL_FILE_NAME = "simple_cnn.onnx"
 DEFAULT_SIMPLE_CNN_ONNX_PATH = (
@@ -70,32 +67,6 @@ def rename_onnx_io_nodes(onnx_path: Path):
     onnx.save(model, onnx_path)
 
 
-def convert_model_to_onnx_with_torchscript(
-    onnx_path: Path = DEFAULT_SIMPLE_CNN_ONNX_PATH,
-    num_layers: int = 3,
-):
-    # Create a model instance and dummy outputs
-    batch_size = 8
-    model = SimpleCNN(num_layers=num_layers)
-    model.eval()
-    dummy_input = torch.randn(batch_size, 3, 1080, 1920)
-    outputs = model(dummy_input)
-
-    # Convert to ONNX
-    torch.onnx.export(
-        model,
-        dummy_input,
-        str(onnx_path),
-        verbose=True,
-        input_names=["input_image"],
-        output_names=["output_image"],
-        dynamic_axes={
-            "input_image": {0: "batch_size"},
-            "output_image": {0: "batch_size"},
-        },
-    )
-
-
 @click.command()
 @click.option("-o", "--onnx-path", type=Path, default=DEFAULT_SIMPLE_CNN_ONNX_PATH)
 @click.option("-l", "--num-layers", type=int, default=3)
@@ -103,7 +74,8 @@ def convert_simple_cnn_to_onnx(
     onnx_path: Path = DEFAULT_SIMPLE_CNN_ONNX_PATH,
     num_layers: int = 3,
 ):
-    convert_model_to_onnx_with_torchscript(onnx_path, num_layers)
+    convert_pytorch_model_to_onnx(onnx_path, num_layers)
+    rename_onnx_io_nodes(onnx_path)
 
 
 if __name__ == "__main__":

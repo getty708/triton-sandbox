@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from benchmarks.common.models.simple_cnn.const import SIMPLE_CNN_OUTPUT_TENSOR
+from models.simple_cnn.const import SIMPLE_CNN_OUTPUT_TENSOR
 
 
 class SimpleCNN(nn.Module):
