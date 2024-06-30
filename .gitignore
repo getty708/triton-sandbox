@@ -302,6 +302,10 @@ $RECYCLE.BIN/
 # ========================
 # Custom
 # ========================
+# CI
+pytest-coverage.txt
+pytest.xml
+
 # Models
 *.pb
 *.tar.gz

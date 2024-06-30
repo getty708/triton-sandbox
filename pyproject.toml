@@ -35,12 +35,6 @@ markers = [
 ]
 testpaths = ["models/"]
 
-
-packages = [
-    { include = "models" }
-]
-
-
 [tool.black]
 line-length = 100
 target-version = ['py310']
