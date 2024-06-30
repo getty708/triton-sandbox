@@ -41,8 +41,7 @@ target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 (
-  benchmarks/
-  | deepstream/
+  deepstream/
   | pytriton/
   | triton_tutorials/
 )
@@ -51,8 +50,25 @@ extend-exclude = '''
 
 [tool.isort]
 profile = "black"
-src_paths = ["models"]
+src_paths = ["models", "triton_experiments"]
 
 
 [tool.pylint.format]
 max-line-length = 100
+
+[tool.pylint.messages_control]
+disable = [
+  "duplicate-code",
+  "fixme",
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "no-else-return",
+  "no-member",
+  "no-value-for-parameter",
+  "protected-access",
+  "too-few-public-methods",
+  "unused-argument",
+]
