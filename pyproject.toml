@@ -44,8 +44,15 @@ markers = [
 ]
 testpaths = [
   "models/",
-  "triton_experiments/concurrent_model_exec",
-  "triton_experiments/ensemble_model_overhead",
+  "triton_experiments/",
+]
+
+[tool.coverage.run]
+omit = ["**/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover"
 ]
 
 [tool.black]
