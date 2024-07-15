@@ -17,9 +17,7 @@ _SIMPLE_TRANSFORMER_ONNX_FILE = _ONNX_FILE_DIR / "simple_transformer_optimized.o
 
 
 @pytest.mark.inference
-@pytest.mark.skipif(
-    _SIMPLE_TRANSFORMER_ONNX_FILE.exists() is False, reason="ONNX file not found."
-)
+@pytest.mark.skipif(_SIMPLE_TRANSFORMER_ONNX_FILE.exists() is False, reason="ONNX file not found.")
 @pytest.mark.parametrize(
     "batch_size",
     (1, 8, 32),

@@ -5,6 +5,10 @@ description = ""
 authors = ["Naoya Yoshimura <yoshimura708x@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+    { include = "models" },
+    { include = "triton_experiments" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -14,6 +18,10 @@ loguru = "^0.7.2"
 onnx = "^1.16.1"
 onnxsim = "^0.4.36"
 onnxruntime = "^1.18.1"
+tritonclient = {extras = ["all"], version = "^2.47.0"}
+pandas = "^2.2.2"
+tqdm = "^4.66.4"
+opencv-python = "^4.10.0.84"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
@@ -21,6 +29,7 @@ pytest-cov = "^5.0.0"
 black = "^24.4.2"
 isort = "^5.13.2"
 pylint = "^3.2.5"
+pytest-mock = "^3.14.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -28,12 +37,23 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-rsxX -l --tb=short --strict-markers -v --ff --setup-show"
+addopts = "-rsxX -l --tb=short --strict-markers -v --ff"
 markers = [
     "unit: mark a test as a unit test",
     "inference: mark a test as an inference test",
 ]
-testpaths = ["models/"]
+testpaths = [
+  "models/",
+  "triton_experiments/",
+]
+
+[tool.coverage.run]
+omit = ["**/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover"
+]
 
 [tool.black]
 line-length = 100
@@ -41,8 +61,7 @@ target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 (
-  benchmarks/
-  | deepstream/
+  deepstream/
   | pytriton/
   | triton_tutorials/
 )
@@ -51,8 +70,29 @@ extend-exclude = '''
 
 [tool.isort]
 profile = "black"
-src_paths = ["models"]
+src_paths = ["models", "triton_experiments"]
 
 
 [tool.pylint.format]
 max-line-length = 100
+
+[tool.pylint.messages_control]
+disable = [
+  "consider-using-f-string",
+  "duplicate-code",
+  "fixme",
+  "import-error",
+  "line-too-long",
+  "missing-class-docstring",
+  "missing-docstring",
+  "missing-function-docstring",
+  "missing-module-docstring",
+  "no-else-return",
+  "no-member",
+  "no-value-for-parameter",
+  "protected-access",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "unspecified-encoding",
+  "unused-argument",
+]

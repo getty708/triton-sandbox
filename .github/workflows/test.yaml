@@ -32,6 +32,7 @@ jobs:
           make test | tee pytest-coverage.txt
         shell: bash
       - name: Pytest coverage comment
+        if: github.ref != 'refs/heads/main'
         uses: MishaKav/pytest-coverage-comment@v1.1.47
         with:
           pytest-coverage-path: ./pytest-coverage.txt

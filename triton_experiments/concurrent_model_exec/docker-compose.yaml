@@ -1,0 +1,22 @@
+services:
+  workspace:
+    image: getty708/triton-sandbox:24.01-py3-benchmark
+    working_dir: /workspace/triton-sandbox/triton_experiments/concurrent_model_exec
+    command: /bin/bash
+    tty: true
+    volumes:
+      - ../../:/workspace/triton-sandbox
+    environment:
+      PYTHONPATH: /workspace/triton-sandbox
+      TF_ENABLE_ONEDNN_OPTS: 0
+    shm_size: 32g
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]

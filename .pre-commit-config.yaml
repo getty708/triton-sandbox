@@ -29,4 +29,5 @@ repos:
     rev: v3.2.4
     hooks:
       - id: pylint
-        args: ["--rcfile=pylintrc"]
+        entry: poetry run pylint
+        args: ["--rcfile=pyproject.toml"]
