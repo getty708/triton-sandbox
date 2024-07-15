@@ -37,12 +37,16 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-rsxX -l --tb=short --strict-markers -v --ff --setup-show"
+addopts = "-rsxX -l --tb=short --strict-markers -v --ff"
 markers = [
     "unit: mark a test as a unit test",
     "inference: mark a test as an inference test",
 ]
-testpaths = ["models/"]
+testpaths = [
+  "models/",
+  "triton_experiments/concurrent_model_exec",
+  "triton_experiments/ensemble_model_overhead",
+]
 
 [tool.black]
 line-length = 100
@@ -82,5 +86,6 @@ disable = [
   "protected-access",
   "too-few-public-methods",
   "too-many-arguments",
+  "unspecified-encoding",
   "unused-argument",
 ]

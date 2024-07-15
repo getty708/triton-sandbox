@@ -18,7 +18,6 @@ The goal of this project is to understand the overhead caused by Triton Ensemble
 - Loanch docker container.
 
 ```bash
-docker compose build
 docker compose up -d
 ```
 
@@ -27,10 +26,7 @@ docker compose up -d
 ```bash
 docker compose exec tritonserver bash
 
-# Pipeline Architecture=`Monolithic`  (# of models = 1)
-make start-triton-monolithic PIPELINE_STEPS=1
-# Pipeline Architecture=`Ensemble` (# of models = 4)
-make start-triton-monolithic PIPELINE_STEPS=4
+make start-triton
 ```
 
 - In another terminal, send inference requests.
@@ -39,12 +35,14 @@ make start-triton-monolithic PIPELINE_STEPS=4
 docker compose exec tritonserver bash
 
 # Send request to the monolithic pipeline (# of models = 1)
-make start-triton-monolithic PIPELINE_STEPS=1
+make call-monolithic PIPELINE_STEPS=1
 # Send request to the ensemble pipeline (# of models = 4)
-make start-triton-monolithic PIPELINE_STEPS=4
+make call-ensemble PIPELINE_STEPS=4
 ```
 
-- Run triton sever with the profiler (NVIDIA NSight System)
+### (Optional) Launch triton Server with NVIDIA Nsight Systems (GPU Profiler)
+
+- (Optional) Run triton sever with the profiler.
 
 ```bash
 docker compose exec tritonserver bash

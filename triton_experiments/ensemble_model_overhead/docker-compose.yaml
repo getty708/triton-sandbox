@@ -1,12 +1,7 @@
-version: "3"
 services:
   tritonserver:
-    build:
-      context: ./docker
-      dockerfile: Dockerfile
-      target: gpu_image
-    image: getty708/triton-sandbox:24.01-py3-benchmark-ensemble-gpu
-    working_dir: /workspace/triton-sandbox/benchmarks/ensemble_model_overhead
+    image: getty708/triton-sandbox:24.01-py3-benchmark
+    working_dir: /workspace/triton-sandbox/triton_experiments/ensemble_model_overhead
     command: /bin/bash
     tty: true
     volumes:

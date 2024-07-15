@@ -1,12 +1,13 @@
 import json
 
 import torch
-from benchmarks.ensemble_model_overhead.dummy_model.const import (
+
+from triton_experiments.ensemble_model_overhead.dummy_model.const import (
     DUMMY_IMAGE_INPUT_TENSOR_NAME,
     DUMMY_IMAGE_OUTPUT_TENSOR_NAME,
 )
-from benchmarks.ensemble_model_overhead.dummy_model.model import DummyModel
-from benchmarks.triton_utils.python_backend import (
+from triton_experiments.ensemble_model_overhead.dummy_model.model import DummyModel
+from triton_experiments.triton_utils.python_backend import (
     build_inference_response,
     convert_infer_request_to_tensors,
 )
@@ -15,6 +16,8 @@ _DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class TritonPythonModel:
+    output_tensor_configs: dict | None = None
+    model: torch.nn.Module | None = None
 
     def initialize(self, args):
         model_config = json.loads(args["model_config"])

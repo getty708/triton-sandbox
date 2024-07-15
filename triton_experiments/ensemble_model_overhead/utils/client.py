@@ -10,12 +10,13 @@ import tritonclient.grpc as grpcclient
 import tritonclient.utils.cuda_shared_memory as cudashm
 import tritonclient.utils.shared_memory as shm
 import yaml
-from benchmarks.ensemble_model_overhead.dummy_model.const import (
+from loguru import logger
+from tritonclient import utils
+
+from triton_experiments.ensemble_model_overhead.dummy_model.const import (
     DUMMY_IMAGE_INPUT_TENSOR_NAME,
     DUMMY_IMAGE_OUTPUT_TENSOR_NAME,
 )
-from loguru import logger
-from tritonclient import utils
 
 _DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 

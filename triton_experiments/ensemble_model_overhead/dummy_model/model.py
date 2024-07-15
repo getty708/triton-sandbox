@@ -1,7 +1,8 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from benchmarks.ensemble_model_overhead.dummy_model.const import (
+from torch import nn
+
+from triton_experiments.ensemble_model_overhead.dummy_model.const import (
     DUMMY_IMAGE_OUTPUT_TENSOR_NAME,
 )
 

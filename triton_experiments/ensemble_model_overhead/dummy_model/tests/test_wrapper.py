@@ -1,12 +1,12 @@
 from pathlib import Path
 
 import torch
-from benchmarks.ensemble_model_overhead.dummy_model.const import (
+from loguru import logger
+
+from triton_experiments.ensemble_model_overhead.dummy_model.const import (
     DUMMY_IMAGE_OUTPUT_TENSOR_NAME,
 )
-from benchmarks.ensemble_model_overhead.dummy_model.model import DummyModel
-from benchmarks.ensemble_model_overhead.utils.client import prepare_image_batch_tensor
-from loguru import logger
+from triton_experiments.ensemble_model_overhead.dummy_model.model import DummyModel
 
 _REPO_ROOT = Path(__file__).parents[4]
 SAMPLE_IMAGE_PATH = _REPO_ROOT / "data" / "pexels-anna-tarazevich-14751175-fullhd.jpg"
@@ -24,12 +24,15 @@ def test_dummy_model():
 
     assert isinstance(model, torch.nn.Module)
     assert list(pixel_value.size()) == [batch_size, 3, 1080, 1920]
-    assert pixel_value.device == torch.device(_DEVICE)
+    if _DEVICE == "cuda":
+        assert pixel_value.is_cuda
+    else:
+        assert not pixel_value.is_cuda
 
 
 def test_dummy_model_repetitive_inference():
     batch_size = 8
-    image_input = prepare_image_batch_tensor(SAMPLE_IMAGE_PATH, batch_size)
+    image_input = torch.rand((batch_size, 3, 1080, 1920))
     image_input = image_input.to(dtype=torch.float32, device=_DEVICE)
     num_requests = 100
     model = DummyModel().to(device=torch.device(_DEVICE))
