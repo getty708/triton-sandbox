@@ -2,7 +2,7 @@ version: "3"
 services:
   tritonserver:
     image: getty708/triton-sandbox:24.01-py3-benchmark
-    working_dir: /workspace/triton-sandbox/benchmarks/onnx_backend
+    working_dir: /workspace/triton-sandbox/triton_experiments/onnx_backend
     command: /bin/bash
     tty: true
     volumes:

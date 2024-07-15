@@ -28,7 +28,6 @@
 - Loanch docker container.
 
 ```bash
-docker compose build
 docker compose up -d
 ```
 
@@ -51,11 +50,8 @@ docker compose exec tritonserver bash
 
 # Send request to the Simple CNN (# of models = 1)
 make call-monolithic-cnn
-# Send request to the ensemble of the 4 Simple CNN (# of models = 4)
-make call-ensemble-cnn
-
 # Send request to the Simple Transformer (# of models = 1)
 make call-monolithic-transformer
-# Send request to the ensemble of the 4 Simple Transformer (# of models = 4)
-make call-ensemble-transformer
+# Send request to the Simple Transformer (# of models = 1, with TensorRT Optimization)
+make call-monolithic-transformer-trt
 ```

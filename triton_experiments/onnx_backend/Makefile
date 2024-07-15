@@ -1,17 +1,20 @@
+MODEL_DIR_CNN := ../../models/simple_cnn
+MODEL_DIR_TRANSFORMER := ../../models/simple_transformer
+
 .PHONY: init
 init: build-simple-cnn build-simple-transformer
 
 .PHONY: build-simple-cnn
 build-simple-cnn:
-	$(MAKE) -C ../common/models/simple_cnn/tools build MODEL_NUM_LAYERS=1
-	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn/1/model.onnx
-	cp -r ../common/models/simple_cnn/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_trt/1/model.onnx
+	$(MAKE) -C ${MODEL_DIR_CNN}/tools build MODEL_NUM_LAYERS=1
+	cp -r ${MODEL_DIR_CNN}/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn/1/model.onnx
+	cp -r ${MODEL_DIR_CNN}/tools/outputs/simple_cnn_l3.onnx ./model_repository/simple_cnn_trt/1/model.onnx
 
 .PHONY: build-simple-transformer
 build-simple-transformer:
-	$(MAKE) -C ../common/models/simple_transformer/tools build
-	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer/1/model.onnx
-	cp -r ../common/models/simple_transformer/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer_trt/1/model.onnx
+	$(MAKE) -C ${MODEL_DIR_TRANSFORMER}/tools build
+	cp -r ${MODEL_DIR_TRANSFORMER}/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer/1/model.onnx
+	cp -r ${MODEL_DIR_TRANSFORMER}/tools/outputs/simple_transformer.onnx ./model_repository/simple_transformer_trt/1/model.onnx
 
 
 
@@ -65,14 +68,6 @@ call-monolithic-cnn:
 		--pipeline-architecture	monolithic \
 		--pipeline-step-size 1
 
-
-.PHONY: call-ensemble-cnn
-call-ensemble-cnn:
-	python client_cnn.py ${CLIENT_COMMON_ARGS} \
-		--pipeline-architecture	ensemble \
-		--pipeline-step-size 4
-
-
 # Transformer
 .PHONY: call-monolithic-transformer
 call-monolithic-transformer:
@@ -86,13 +81,6 @@ call-monolithic-transformer-trt:
 	python client_transformer.py ${CLIENT_COMMON_ARGS} \
 		--pipeline-architecture	monolithic \
 		--pipeline-step-size 1 --trt
-
-# Transformer
-.PHONY: call-ensemble-transformer
-call-ensemble-transformer:
-	python client_transformer.py ${CLIENT_COMMON_ARGS} \
-		--pipeline-architecture	ensemble \
-		--pipeline-step-size 4
 
 
 OUTPUT_SHM_SIZE = 214748364
