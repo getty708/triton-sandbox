@@ -1,0 +1,80 @@
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:${JAEGER_IMAGE_TAG:-latest}
+    volumes:
+      - "./infra/jaeger/jaeger-ui.json:/etc/jaeger/jaeger-ui.json"
+    command: --query.ui-config /etc/jaeger/jaeger-ui.json
+    ports:
+      - "16686:16686"
+    networks:
+      - otel-in-ml
+
+  prometheus:
+    container_name: prometheus
+    env_file:
+      - .env
+    image: prom/prometheus:latest
+    volumes:
+      - ./infra/prometheus/config/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - otel-in-ml
+
+  grafana:
+    container_name: grafana
+    labels:
+      prometheus-scrape.enabled: "false"
+      service: "grafana"
+    env_file:
+      - .env
+    image: grafana/grafana-oss:latest
+    volumes:
+      # TODO: Remove unnecesary volumes.
+      - ./infra/grafana/datasources:/etc/grafana/provisioning/datasources
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "${GRAFANA_PORT}:${GRAFANA_PORT}"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    networks:
+      - otel-in-ml
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    ports:
+      - "4317:4317"
+      - "55680:55680"
+      - "8000:8000"
+    volumes:
+      - ./infra/otel-collector/config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    command:
+      - --config=/etc/otel-collector-config.yaml
+    networks:
+      - otel-in-ml
+
+  otel-gpu-collector:
+    container_name: otel-gpu-collector
+    image: ghcr.io/openlit/otel-gpu-collector:latest
+    environment:
+      GPU_APPLICATION_NAME: ml-pipeline
+      GPU_ENVIRONMENT: dev
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:55680
+      OTEL_EXPORTER_OTLP_HEADERS: null
+    networks:
+      - otel-in-ml
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+volumes:
+  grafana-data: {}
+  prometheus-data: {}
+
+networks:
+  otel-in-ml:
