@@ -1,0 +1,4 @@
+loguru
+opentelemetry-distro
+opentelemetry-sdk
+opentelemetry-exporter-otlp

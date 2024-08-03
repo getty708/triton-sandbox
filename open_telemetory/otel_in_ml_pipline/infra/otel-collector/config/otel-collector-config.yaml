@@ -20,21 +20,8 @@ connectors:
     histogram:
       explicit:
         buckets:
-          [
-            1ms,
-            10ms,
-            100ms,
-            200ms,
-            300ms,
-            400ms,
-            500ms,
-            600ms,
-            700ms,
-            800ms,
-            900ms,
-            1s,
-          ]
-    metrics_flush_interval: 3s
+          [100ms, 200ms, 300ms, 400ms, 500ms, 600ms, 700ms, 800ms, 900ms, 1s]
+    metrics_flush_interval: 5s
 
 service:
   pipelines:

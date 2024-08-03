@@ -1,4 +1,24 @@
 services:
+  pipeline:
+    build:
+      context: ./app/docker
+      dockerfile: Dockerfile
+    image: getty708/mlops-sandbox:24.01-py3-otel
+    container_name: pipeline
+    working_dir: /workspace/triton-sandbox/open_telemetory/otel_in_ml_pipline/app
+    command: /bin/bash
+    tty: true
+    volumes:
+      - ../../:/workspace/triton-sandbox
+    networks:
+      - otel-in-ml
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+
   jaeger:
     image: jaegertracing/all-in-one:${JAEGER_IMAGE_TAG:-latest}
     volumes:
@@ -42,6 +62,7 @@ services:
       - otel-in-ml
 
   otel-collector:
+    container_name: otel-collector
     image: otel/opentelemetry-collector-contrib:latest
     ports:
       - "4317:4317"
